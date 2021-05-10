@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/loginCard"
+    android:layout_gravity="center"
+    android:layout_marginTop="@dimen/loginViewsMargin"
+    android:layout_marginBottom="@dimen/loginViewsMargin"
+    android:background="@color/whiteCardColor"
+    android:elevation="5dp"
+    app:cardCornerRadius="@dimen/loginCardRadius">
+
+    <LinearLayout
+        style="@style/linearParent"
+        android:layout_gravity="center"
+        android:padding="@dimen/loginViewsMargin">
+
+        <TextView
+            style="@style/headerTextPrimary"
+            android:layout_marginTop="@dimen/loginViewsMargin"
+            android:text="@string/login_txt" />
+
+        <EditText
+            android:id="@+id/loginTextMobile"
+            style="@style/parent"
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:hint="@string/mobile_number"
+            android:inputType="number"
+            android:maxLines="1" />
+
+
+        <EditText
+            android:id="@+id/loginTextPassword"
+            style="@style/parent"
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:hint="@string/login_password_hint"
+            android:inputType="textPassword"
+            android:maxLines="1" />
+
+        <Button
+            android:id="@+id/loginButton"
+            style="@style/loginButton"
+            android:layout_gravity="center"
+            android:text="@string/login" />
+
+        <TextView
+            android:id="@+id/signup_in_login"
+            style="@style/parent"
+            android:layout_marginTop="@dimen/loginViewsMargin"
+            android:clickable="true"
+            android:text="@string/login_signup_hint"
+            android:textAlignment="center"
+            android:textColor="@color/primaryTextColor"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

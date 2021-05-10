@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/loginCard"
+    android:layout_gravity="center"
+    android:layout_marginTop="@dimen/loginViewsMargin"
+    android:layout_marginBottom="@dimen/loginViewsMargin"
+    android:background="@color/whiteCardColor"
+    android:elevation="5dp"
+    app:cardCornerRadius="@dimen/loginCardRadius">
+
+    <LinearLayout
+        style="@style/linearParent"
+        android:layout_gravity="center"
+        android:padding="@dimen/loginViewsMargin">
+
+        <TextView
+            style="@style/headerTextPrimary"
+            android:layout_marginTop="@dimen/loginViewsMargin"
+            android:text="@string/register" />
+
+        <EditText
+            android:id="@+id/editTextF_Name"
+            style="@style/parent"
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:autofillHints="First Name"
+            android:hint="First Name"
+            android:inputType="text"
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/editTextL_Name"
+            style="@style/parent"
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:hint="Last Name"
+            android:inputType="text"
+            android:maxLines="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editTextMobile"
+                style="@style/parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:hint="Mobile Number"
+                android:inputType="number"
+                android:maxLines="1" />
+
+            <Button
+                android:id="@+id/verifyMobileButton"
+                style="@style/verifyMobileButton"
+                android:layout_width="100dp"
+                android:text="Verify" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/editTextEmail"
+            style="@style/parent"
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:autofillHints="Email Id"
+            android:hint="@string/login_email_hint"
+            android:inputType="textEmailAddress"
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/editTextPassword"
+            style="@style/parent"
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:hint="@string/login_password_hint"
+            android:inputType="textPassword"
+            android:maxLines="1" />
+
+        <Button
+            android:id="@+id/registerButton"
+            style="@style/loginButton"
+            android:layout_gravity="center"
+            android:text="Register" />
+
+        <TextView
+            style="@style/parent"
+            android:layout_marginTop="@dimen/loginViewsMargin"
+            android:text="@string/signup_login_hint"
+            android:textAlignment="center"
+            android:textColor="@color/primaryTextColor"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

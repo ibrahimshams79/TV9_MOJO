@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "317293024072",
+    "project_id": "tv9-mojo",
+    "storage_bucket": "tv9-mojo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317293024072:android:d070c7554056e7eb91197d",
+        "android_client_info": {
+          "package_name": "com.tv9.tv9MoJo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "317293024072-haql0t6c1glp91mc4rqdshi280o66adv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwOsXOxNgdtqyLgp2Mk1Fi3KGHD-akfwM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "317293024072-haql0t6c1glp91mc4rqdshi280o66adv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
