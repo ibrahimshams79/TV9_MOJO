@@ -29,10 +29,10 @@
             android:maxLines="1" />
 
         <EditText
-            android:id="@+id/editTextL_Name"
+            android:id="@+id/editUser_Name"
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top"
-            android:hint="Last Name"
+            android:hint="User Name"
             android:inputType="text"
             android:maxLines="1" />
 
@@ -45,8 +45,8 @@
                 android:id="@+id/editTextMobile"
                 style="@style/parent"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="1"
                 android:hint="Mobile Number"
                 android:inputType="number"
                 android:maxLines="1" />
@@ -59,14 +59,6 @@
 
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/editTextEmail"
-            style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top"
-            android:autofillHints="Email Id"
-            android:hint="@string/login_email_hint"
-            android:inputType="textEmailAddress"
-            android:maxLines="1" />
 
         <EditText
             android:id="@+id/editTextPassword"
@@ -75,6 +67,16 @@
             android:hint="@string/login_password_hint"
             android:inputType="textPassword"
             android:maxLines="1" />
+
+        <ProgressBar
+            android:id="@+id/regprogress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:outlineAmbientShadowColor="@android:color/background_dark"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword" />
 
         <Button
             android:id="@+id/registerButton"

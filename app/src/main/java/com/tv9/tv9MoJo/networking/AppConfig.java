@@ -8,8 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AppConfig {
 
    //public static String BASE_URL = "http://192.168.43.68/tv9/";
-
-   public static String BASE_URL = "https://files.000webhost.com/TV9";
+    public static String BASE_URL = "http://192.168.3.81/tv9/";
+//   public static String BASE_URL = "https://files.000webhost.com/TV9";
 
     public static Retrofit getRetrofit() {
 

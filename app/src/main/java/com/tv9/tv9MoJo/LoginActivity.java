@@ -20,10 +20,13 @@ public class LoginActivity extends AppCompatActivity {
     Button loginButton;
     EditText mobileNo, password;
     TextView signup_in_login;
-    private boolean CheckEditText=false;
+    boolean CheckEditText=false;
     String Password_Str, MobileNo_Str, finalResult;
     ProgressDialog progressDialog;
     HashMap<String,String> hashMap = new HashMap<>();
+
+    String HttpURL = "http://192.168.3.81/LoginRegister/login.php";
+    HttpParse httpParse = new HttpParse();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +36,6 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         mobileNo = findViewById(R.id.loginTextMobile);
         password = findViewById(R.id.loginTextPassword);
-
-        MobileNo_Str = mobileNo.getText().toString();
-        Password_Str = password.getText().toString();
 
         signup_in_login = findViewById(R.id.signup_in_login);
 
@@ -64,15 +64,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-
-            }
-        });
+//        loginButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//
+//
+//            }
+//        });
 
         signup_in_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,13 +85,16 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void CheckEditTextIsEmptyOrNot() {
-
+        MobileNo_Str = mobileNo.getText().toString();
+        Password_Str = password.getText().toString();
 
         if (TextUtils.isEmpty(MobileNo_Str) || TextUtils.isEmpty(Password_Str)) {
+            Toast.makeText(LoginActivity.this, ""+ CheckEditText, Toast.LENGTH_LONG).show();
 
             CheckEditText = false;
 
         } else {
+            Toast.makeText(LoginActivity.this, ""+ CheckEditText, Toast.LENGTH_LONG).show();
 
             CheckEditText = true;
         }
@@ -107,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             protected void onPreExecute() {
                 super.onPreExecute();
 
-                progressDialog = ProgressDialog.show(LoginActivity.this, "Loading Data", null, true, true);
+                progressDialog = ProgressDialog.show(LoginActivity.this, "Signing in...", null, true, true);
             }
 
             @Override
@@ -117,18 +119,24 @@ public class LoginActivity extends AppCompatActivity {
 
                 progressDialog.dismiss();
 
-                Toast.makeText(LoginActivity.this, httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
+                if (finalResult=="Login Success") {
 
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    Toast.makeText(LoginActivity.this, httpResponseMsg, Toast.LENGTH_LONG).show();
+                }
+                else
+                    Toast.makeText(LoginActivity.this, httpResponseMsg, Toast.LENGTH_LONG).show();
             }
 
             @Override
             protected String doInBackground(String... params) {
 
-                hashMap.put("mobile_no", params[0]);
+                hashMap.put("rep_phoneno", params[0]);
 
-                hashMap.put("password", params[1]);
+                hashMap.put("rep_password", params[1]);
 
-//                finalResult = httpParse.postRequest(hashMap, HttpURL);
+                finalResult = httpParse.postRequest(hashMap, HttpURL);
 
                 return finalResult;
             }
