@@ -24,11 +24,10 @@ import java.util.HashMap;
 public class RegisterActivity extends AppCompatActivity {
 
     Button register, log_in;
-    EditText Full_Name, User_Name, Password, Mobile;
-    String FullName, UserName, MobileHolder, PasswordHolder;
+    EditText Full_Name, Password, Mobile;
+    String FullName, MobileHolder, PasswordHolder;
     //    String finalResult;
     String HttpURL = "http://192.168.0.103/LoginRegister/signup.php";
-    ProgressBar progressBar;
 //    Boolean CheckEditText;
 //    ProgressDialog progressDialog;
 //    HashMap<String, String> hashMap = new HashMap<>();
@@ -42,28 +41,25 @@ public class RegisterActivity extends AppCompatActivity {
 
         //Assign Id'S
         Full_Name = (EditText) findViewById(R.id.editTextF_Name);
-        User_Name = (EditText) findViewById(R.id.editUser_Name);
         Mobile = (EditText) findViewById(R.id.editTextMobile);
 
         Password = (EditText) findViewById(R.id.editTextPassword);
 
         register = (Button) findViewById(R.id.registerButton);
         log_in = (Button) findViewById(R.id.verifyMobileButton);
-        progressBar = findViewById(R.id.regprogress);
 
         //Adding Click Listener on button.
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FullName = Full_Name.getText().toString();
-                UserName = User_Name.getText().toString();
                 PasswordHolder = Password.getText().toString();
                 MobileHolder = Mobile.getText().toString();
 
                 // Checking whether EditText is Empty or Not
 //                CheckEditTextIsEmptyOrNot();
 
-                if (TextUtils.isEmpty(FullName) || TextUtils.isEmpty(UserName) || TextUtils.isEmpty(MobileHolder) || TextUtils.isEmpty(PasswordHolder)) {
+                if (TextUtils.isEmpty(FullName) || TextUtils.isEmpty(MobileHolder) || TextUtils.isEmpty(PasswordHolder)) {
 
                     // If EditText is not empty and CheckEditText = True then this block will execute.
 
@@ -73,7 +69,6 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Please fill all form fields.", Toast.LENGTH_LONG).show();
 
                 } else {
-                    progressBar.setVisibility(View.VISIBLE);
                     ProgressDialog progressDialog = ProgressDialog.show(RegisterActivity.this, "Signing you up...", null, true, true);
                     Handler handler = new Handler(Looper.getMainLooper());
                     handler.post(new Runnable() {
@@ -81,21 +76,18 @@ public class RegisterActivity extends AppCompatActivity {
                         public void run() {
                             //Starting Write and Read data with URL
                             //Creating array for parameters
-                            String[] field = new String[4];
+                            String[] field = new String[3];
                             field[0] = "rep_name";
-                            field[1] = "user_name";
-                            field[2] = "rep_phoneno";
-                            field[3] = "rep_password";
+                            field[1] = "rep_phoneno";
+                            field[2] = "rep_password";
                             //Creating array for data
-                            String[] data = new String[4];
+                            String[] data = new String[3];
                             data[0] = FullName;
-                            data[1] = UserName;
-                            data[2] = MobileHolder;
-                            data[3] = PasswordHolder;
+                            data[1] = MobileHolder;
+                            data[2] = PasswordHolder;
                             PutData putData = new PutData(HttpURL, "POST", field, data);
                             if (putData.startPut()) {
                                 if (putData.onComplete()) {
-                                    progressBar.setVisibility(View.GONE);
                                     progressDialog.dismiss();
                                     String result = putData.getResult();
                                     //End ProgressBar (Set visibility to GONE)

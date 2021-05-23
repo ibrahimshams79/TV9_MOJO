@@ -179,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             try {
-                url = new URL("http://192.168.0.103/LoginRegister/login.php");
+                url = new URL(HttpURL);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 return "exception";
