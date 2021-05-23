@@ -92,21 +92,25 @@ public class RegisterActivity extends AppCompatActivity {
                                     String result = putData.getResult();
                                     //End ProgressBar (Set visibility to GONE)
                                     Log.i("PutData", result);
-                                    if (result.equals("Sign Up Success")) {
-                                        Toast.makeText(RegisterActivity.this, result, Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    } else if (result.equals("Sign up Failed")){
-                                        Toast.makeText(RegisterActivity.this, "Signup: Failed "+ result, Toast.LENGTH_LONG).show();
+                                    switch (result) {
+                                        case "Sign Up Success":
+                                            Toast.makeText(RegisterActivity.this, result, Toast.LENGTH_LONG).show();
+                                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                            break;
+                                        case "Sign up Failed":
+                                            Toast.makeText(RegisterActivity.this, "Signup: Failed " + result, Toast.LENGTH_LONG).show();
 
-                                    }else if (result.equals("Error: Database connection")){
-                                        Toast.makeText(RegisterActivity.this, "Connection: Failed "+ result, Toast.LENGTH_LONG).show();
+                                            break;
+                                        case "Error: Database connection":
+                                            Toast.makeText(RegisterActivity.this, "Database Error: " + result, Toast.LENGTH_LONG).show();
 
-                                    }
-                                    else if (result.equals("All fields are required")){
-                                        Toast.makeText(RegisterActivity.this, "Connection: Failed "+ result, Toast.LENGTH_LONG).show();
+                                            break;
+                                        case "All fields are required":
+                                            Toast.makeText(RegisterActivity.this, "Connection: Error " + result, Toast.LENGTH_LONG).show();
 
+                                            break;
                                     }
                                 }
                             }

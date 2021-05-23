@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,11 +15,15 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.navigation.NavigationView;
 import com.tv9.tv9MoJo.networking.ApiConfig;
 import com.tv9.tv9MoJo.networking.AppConfig;
 import com.tv9.tv9MoJo.networking.ServerResponse;
@@ -30,12 +36,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
     private ImageButton image, video, audio, pdf;
     private Button submitStory;
     private EditText story, descWithText;
     ProgressDialog pDialog;
-
+    private long backPressedTime;
+    private Toast backToast;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,11 +56,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         story = findViewById(R.id.storyWithText);
         descWithText = findViewById(R.id.descriptionWithText);
         submitStory = findViewById(R.id.submitStory);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        NavigationView navigationView = findViewById(R.id.reporter_nav_view_home);
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
         initDialog();
+        navigationView.setNavigationItemSelectedListener(this);
+
+        Toolbar toolbar = findViewById(R.id.reporter_drawer_toolbar);
+        toolbar.setTitle("Home");
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = findViewById(R.id.reporter_drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             image.setEnabled(false);
@@ -78,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 0) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 image.setEnabled(true);
@@ -168,5 +188,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.reporter_drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            if (backPressedTime + 2000 > System.currentTimeMillis()) {
+                backToast.cancel();
+                super.onBackPressed();
+                return;
+            } else {
+                backToast = Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT);
+                backToast.show();
+            }
+            backPressedTime = System.currentTimeMillis();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.reporter_drawer_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
     }
 }

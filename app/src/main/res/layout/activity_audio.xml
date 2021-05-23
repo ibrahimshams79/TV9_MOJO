@@ -8,8 +8,8 @@
     >
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+        android:id="@+id/audiotoolbar"
+        layout="@layout/reporterr_app_bar_home" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -28,4 +28,7 @@
     <string name="mobile_number">Mobile Number</string>
     <string name="login">Login</string>
     <string name="tv9_mojo">TV9 MoJo</string>
+    <string name="navigation_drawer_open">navigation drawer open</string>
+    <string name="navigation_drawer_close">navigation drawer close</string>
+    <string name="user_name">user name</string>
 </resources>

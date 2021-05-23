@@ -5,8 +5,8 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+        android:id="@+id/imagetoolbar"
+        layout="@layout/reporterr_app_bar_home" />
 
     <ScrollView
         android:layout_width="match_parent"

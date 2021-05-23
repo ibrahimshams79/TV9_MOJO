@@ -4,8 +4,8 @@
     android:layout_height="match_parent">
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+        android:id="@+id/pdftoolbar"
+        layout="@layout/reporterr_app_bar_home" />
 
     <ScrollView
         android:layout_width="match_parent"

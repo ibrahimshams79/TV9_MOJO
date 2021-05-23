@@ -20,6 +20,8 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+    <style name="AppTheme.PopupOverlay">PopupOverlay</style>
+    <style name="AppTheme.AppBarOverlay">AppBarOverlay</style>
 
     <!--designs for login and register-->
     <style name="parent">
