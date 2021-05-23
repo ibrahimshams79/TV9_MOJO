@@ -27,7 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText Full_Name, User_Name, Password, Mobile;
     String FullName, UserName, MobileHolder, PasswordHolder;
     //    String finalResult;
-    String HttpURL = "http://192.168.3.81/LoginRegister/signup.php";
+    String HttpURL = "http://192.168.0.103/LoginRegister/signup.php";
     ProgressBar progressBar;
 //    Boolean CheckEditText;
 //    ProgressDialog progressDialog;
@@ -74,6 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
+                    ProgressDialog progressDialog = ProgressDialog.show(RegisterActivity.this, "Signing you up...", null, true, true);
                     Handler handler = new Handler(Looper.getMainLooper());
                     handler.post(new Runnable() {
                         @Override
@@ -81,20 +82,21 @@ public class RegisterActivity extends AppCompatActivity {
                             //Starting Write and Read data with URL
                             //Creating array for parameters
                             String[] field = new String[4];
-                            field[0] = "fullname";
-                            field[1] = "username";
-                            field[2] = "mobileno";
-                            field[3] = "password";
+                            field[0] = "rep_name";
+                            field[1] = "user_name";
+                            field[2] = "rep_phoneno";
+                            field[3] = "rep_password";
                             //Creating array for data
                             String[] data = new String[4];
-                            data[0] = "FullName";
-                            data[1] = "UserName";
-                            data[2] = "MobileHolder";
-                            data[3] = "PasswordHolder";
+                            data[0] = FullName;
+                            data[1] = UserName;
+                            data[2] = MobileHolder;
+                            data[3] = PasswordHolder;
                             PutData putData = new PutData(HttpURL, "POST", field, data);
                             if (putData.startPut()) {
                                 if (putData.onComplete()) {
                                     progressBar.setVisibility(View.GONE);
+                                    progressDialog.dismiss();
                                     String result = putData.getResult();
                                     //End ProgressBar (Set visibility to GONE)
                                     Log.i("PutData", result);
@@ -103,9 +105,15 @@ public class RegisterActivity extends AppCompatActivity {
                                         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                                         startActivity(intent);
                                         finish();
+                                    } else if (result.equals("Sign up Failed")){
+                                        Toast.makeText(RegisterActivity.this, "Signup: Failed "+ result, Toast.LENGTH_LONG).show();
 
-                                    } else {
-                                        Toast.makeText(RegisterActivity.this, result, Toast.LENGTH_LONG).show();
+                                    }else if (result.equals("Error: Database connection")){
+                                        Toast.makeText(RegisterActivity.this, "Connection: Failed "+ result, Toast.LENGTH_LONG).show();
+
+                                    }
+                                    else if (result.equals("All fields are required")){
+                                        Toast.makeText(RegisterActivity.this, "Connection: Failed "+ result, Toast.LENGTH_LONG).show();
 
                                     }
                                 }

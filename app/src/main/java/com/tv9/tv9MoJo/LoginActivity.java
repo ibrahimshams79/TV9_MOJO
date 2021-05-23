@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,10 +14,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final int CONNECTION_TIMEOUT = 10000;
+    public static final int READ_TIMEOUT = 15000;
     Button loginButton;
     EditText mobileNo, password;
     TextView signup_in_login;
@@ -25,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     HashMap<String,String> hashMap = new HashMap<>();
 
-    String HttpURL = "http://192.168.3.81/LoginRegister/login.php";
+    String HttpURL = "http://192.168.0.103/LoginRegister/login.php";
     HttpParse httpParse = new HttpParse();
 
     @Override
@@ -51,7 +64,11 @@ public class LoginActivity extends AppCompatActivity {
 
                     // If EditText is not empty and CheckEditText = True then this block will execute.
 
-                    UserLoginFunction(MobileNo_Str, Password_Str);
+//                    UserLoginFunction(MobileNo_Str, Password_Str);
+                    MobileNo_Str = mobileNo.getText().toString();
+                    Password_Str = password.getText().toString();
+
+                    new AsyncLogin().execute(MobileNo_Str, Password_Str);
 
                 } else {
 
@@ -89,62 +106,150 @@ public class LoginActivity extends AppCompatActivity {
         Password_Str = password.getText().toString();
 
         if (TextUtils.isEmpty(MobileNo_Str) || TextUtils.isEmpty(Password_Str)) {
-            Toast.makeText(LoginActivity.this, ""+ CheckEditText, Toast.LENGTH_LONG).show();
 
             CheckEditText = false;
 
         } else {
-            Toast.makeText(LoginActivity.this, ""+ CheckEditText, Toast.LENGTH_LONG).show();
 
             CheckEditText = true;
         }
 
     }
 
-    public void UserLoginFunction(final String mobileNo, final String password) {
+//    public void UserLoginFunction(final String mobileNo, final String password) {
+//
+//        class UserLoginFunctionClass extends AsyncTask<String, Void, String> {
+//
+//            @Override
+//            protected void onPreExecute() {
+//                super.onPreExecute();
+//
+//                progressDialog = ProgressDialog.show(LoginActivity.this, "Signing in...", null, true, true);
+//            }
+//
+//            @Override
+//            protected void onPostExecute(String httpResponseMsg) {
+//
+//                super.onPostExecute(httpResponseMsg);
+//
+//                progressDialog.dismiss();
+//
+//                if (finalResult=="Login Success") {
+//
+//                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(intent);
+//                    Toast.makeText(LoginActivity.this, httpResponseMsg, Toast.LENGTH_LONG).show();
+//                }
+//                else
+//                    Toast.makeText(LoginActivity.this, httpResponseMsg, Toast.LENGTH_LONG).show();
+//            }
+//
+//            @Override
+//            protected String doInBackground(String... params) {
+//
+//                hashMap.put("rep_phoneno", params[0]);
+//
+//                hashMap.put("rep_password", params[1]);
+//
+//                finalResult = httpParse.postRequest(hashMap, HttpURL);
+//
+//                return finalResult;
+//            }
+//        }
+//
+//        UserLoginFunctionClass UserLoginFunction = new UserLoginFunctionClass();
+//
+//        UserLoginFunction.execute(mobileNo, password);
+//    }
 
-        class UserLoginFunctionClass extends AsyncTask<String, Void, String> {
+    private class AsyncLogin extends AsyncTask<String, String, String>
+    {
+        ProgressDialog loading = new ProgressDialog(LoginActivity.this);
+        HttpURLConnection connection;
+        URL url = null;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading.setMessage("\tLoading...");
+            loading.setCancelable(false);
+            loading.show();
+        }
 
-                progressDialog = ProgressDialog.show(LoginActivity.this, "Signing in...", null, true, true);
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                url = new URL("http://192.168.0.103/LoginRegister/login.php");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return "exception";
+            }
+            try {
+                connection = (HttpURLConnection)url.openConnection();
+                connection.setReadTimeout(READ_TIMEOUT);
+                connection.setConnectTimeout(CONNECTION_TIMEOUT);
+                connection.setRequestMethod("POST");
+                connection.setDoInput(true);
+                connection.setDoOutput(true);
+
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("rep_phoneno", params[0])
+                        .appendQueryParameter("rep_password", params[1]);
+                String query = builder.build().getEncodedQuery();
+
+                OutputStream os = connection.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                connection.connect();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                return "exception";
             }
 
-            @Override
-            protected void onPostExecute(String httpResponseMsg) {
+            try {
+                int response_code = connection.getResponseCode();
 
-                super.onPostExecute(httpResponseMsg);
+                if (response_code == HttpURLConnection.HTTP_OK) {
+                    InputStream input = connection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
 
-                progressDialog.dismiss();
-
-                if (finalResult=="Login Success") {
-
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    Toast.makeText(LoginActivity.this, httpResponseMsg, Toast.LENGTH_LONG).show();
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+                    return(result.toString());
+                }else{
+                    return("unsuccessful");
                 }
-                else
-                    Toast.makeText(LoginActivity.this, httpResponseMsg, Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                hashMap.put("rep_phoneno", params[0]);
-
-                hashMap.put("rep_password", params[1]);
-
-                finalResult = httpParse.postRequest(hashMap, HttpURL);
-
-                return finalResult;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "exception";
+            } finally {
+                connection.disconnect();
             }
         }
 
-        UserLoginFunctionClass UserLoginFunction = new UserLoginFunctionClass();
+        @Override
+        protected void onPostExecute(String result) {
+            loading.dismiss();
 
-        UserLoginFunction.execute(mobileNo, password);
+            if(result.equalsIgnoreCase("true"))
+            {
+                Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+            } else if (result.equalsIgnoreCase("false")){
+                Toast.makeText(getApplicationContext(), "Invalid Email or Password.", Toast.LENGTH_LONG).show();
+            } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
+                Toast.makeText(getApplicationContext(), "Something else went wrong.", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
 }
