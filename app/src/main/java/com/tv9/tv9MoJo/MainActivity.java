@@ -39,14 +39,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
     private ImageButton image, video, audio, pdf;
     private Button submitStory;
     private EditText story, descWithText;
     ProgressDialog pDialog;
     private long backPressedTime;
     private Toast backToast;
-
+    ActionBarDrawerToggle toggle;
+    DrawerLayout drawer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,17 +68,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Toolbar toolbar = findViewById(R.id.reporter_drawer_toolbar);
         toolbar.setTitle("Home");
-        setSupportActionBar(toolbar);
+        this.setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.reporter_drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        drawer = findViewById(R.id.reporter_drawer_layout);
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.reporter_nav_view_home);
+
+//        navigationView.setNavigationItemSelectedListener(item -> {
+//            int id = item.getItemId();
+//
+//            if (id == R.id.nav_ftp) {
+//                Toast.makeText(getApplicationContext(), "FTP Selected", Toast.LENGTH_SHORT).show();
+//                drawer.closeDrawer(GravityCompat.START);
+//            } else if (id == R.id.nav_categories) {
+//                drawer.closeDrawer(GravityCompat.START);
+//                Toast.makeText(getApplicationContext(), "category Selected", Toast.LENGTH_SHORT).show();
+//            } else if (id == R.id.nav_settings) {
+//                drawer.closeDrawer(GravityCompat.START);
+//                Toast.makeText(getApplicationContext(), "settings Selected", Toast.LENGTH_SHORT).show();
+//            } else if (id == R.id.nav_logout) {
+//                drawer.closeDrawer(GravityCompat.START);
+//                Toast.makeText(getApplicationContext(), "Logout Selected", Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(intent);
+//                finish();
+//            }
+//            return true;
+//        });
+
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_ftp);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             image.setEnabled(false);
@@ -195,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.reporter_drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -211,12 +234,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.reporter_drawer_menu, menu);
-        return false;
-    }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.reporter_drawer_menu, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -237,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             finish();
         }
 
-        DrawerLayout drawer = findViewById(R.id.reporter_drawer_layout);
+//        DrawerLayout drawer = findViewById(R.id.reporter_drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
 

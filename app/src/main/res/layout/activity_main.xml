@@ -6,20 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    tools:context=".MainActivity">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/reporterr_app_bar_home" />
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/reporter_nav_view_home"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/reporter_home_nav_header"
-        app:menu="@menu/reporter_drawer_menu" />
+        android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/toolbar"
+                    layout="@layout/reporterr_app_bar_home" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -180,6 +176,14 @@
         </RelativeLayout>
 
     </ScrollView>
+    </RelativeLayout>
 
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/reporter_nav_view_home"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/reporter_home_nav_header"
+        app:menu="@menu/reporter_drawer_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
