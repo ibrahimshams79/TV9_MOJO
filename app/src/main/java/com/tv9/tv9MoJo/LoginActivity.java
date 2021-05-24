@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     String Password_Str, MobileNo_Str, finalResult;
     ProgressDialog progressDialog;
     HashMap<String,String> hashMap = new HashMap<>();
+    SharedPreferences sharedPreferences;
 
     String HttpURL = "http://192.168.0.103/LoginRegister/login.php";
     HttpParse httpParse = new HttpParse();
@@ -51,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.loginTextPassword);
 
         signup_in_login = findViewById(R.id.signup_in_login);
+        sharedPreferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
+
 
         //Adding Click Listener on button.
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -240,6 +244,11 @@ public class LoginActivity extends AppCompatActivity {
 
             if(result.equalsIgnoreCase("true"))
             {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("PHONENO", MobileNo_Str);
+                editor.putString("PASSWORD", Password_Str);
+                editor.apply();
+
                 Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);

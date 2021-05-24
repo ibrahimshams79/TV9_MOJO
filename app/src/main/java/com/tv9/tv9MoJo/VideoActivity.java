@@ -50,8 +50,8 @@ import retrofit2.Response;
 
 
 public class VideoActivity extends AppCompatActivity {
-    private static final String TAG ="" ;
-    private static final int REQUEST_TAKE_GALLERY_VIDEO = 3 ;
+    private static final String TAG = "";
+    private static final int REQUEST_TAKE_GALLERY_VIDEO = 3;
     private Button pickVideo, uploadVideo;
     public static final int REQUEST_PICK_VIDEO = 3;
     public ProgressDialog pDialog;
@@ -87,9 +87,9 @@ public class VideoActivity extends AppCompatActivity {
         });
 
         uploadVideo.setOnClickListener(view -> {
-            if (video != null){
+            if (video != null) {
                 uploadFile();
-            }else{
+            } else {
                 Toast.makeText(VideoActivity.this, "Please select a video", Toast.LENGTH_SHORT).show();
             }
         });
@@ -141,7 +141,7 @@ public class VideoActivity extends AppCompatActivity {
     private void initializePlayer(Uri uri) {
         // Show the "Buffering..." message while the video loads.
         mBufferingTextView.setVisibility(VideoView.VISIBLE);
-        if (uri != null){
+        if (uri != null) {
             mVideoView.setVideoURI(uri);
         }
         // Listener for onPrepared() event (runs after the media is prepared).
@@ -205,47 +205,46 @@ public class VideoActivity extends AppCompatActivity {
                     initializePlayer(video);
                 }
             }
-        }
-        else if (resultCode != RESULT_CANCELED) {
+        } else if (resultCode != RESULT_CANCELED) {
             Toast.makeText(this, "Sorry, there was an error!", Toast.LENGTH_LONG).show();
         }
     }
 
 
     @SuppressLint("ObsoleteSdkInt")
-    public String getPathFromURI(Uri uri){
-        String realPath="";
+    public String getPathFromURI(Uri uri) {
+        String realPath = "";
 // SDK < API11
         if (Build.VERSION.SDK_INT < 11) {
-            String[] proj = { MediaStore.Video.Media.DATA };
+            String[] proj = {MediaStore.Video.Media.DATA};
             @SuppressLint("Recycle") Cursor cursor = getContentResolver().query(uri, proj, null, null, null);
             int column_index = 0;
-            String result="";
+            String result = "";
             if (cursor != null) {
                 column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-                realPath=cursor.getString(column_index);
+                realPath = cursor.getString(column_index);
             }
         }
         // SDK >= 11 && SDK < 19
-        else if (Build.VERSION.SDK_INT < 19){
-            String[] proj = { MediaStore.Video.Media.DATA };
+        else if (Build.VERSION.SDK_INT < 19) {
+            String[] proj = {MediaStore.Video.Media.DATA};
             CursorLoader cursorLoader = new CursorLoader(this, uri, proj, null, null, null);
             Cursor cursor = cursorLoader.loadInBackground();
-            if(cursor != null){
+            if (cursor != null) {
                 int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
                 cursor.moveToFirst();
                 realPath = cursor.getString(column_index);
             }
         }
         // SDK > 19 (Android 4.4)
-        else if (Build.VERSION.SDK_INT < 21){
+        else if (Build.VERSION.SDK_INT < 21) {
             String wholeID = DocumentsContract.getDocumentId(uri);
             // Split at colon, use second item in the array
             String id = wholeID.split(":")[1];
-            String[] column = { MediaStore.Video.Media.DATA };
+            String[] column = {MediaStore.Video.Media.DATA};
             // where id is equal to
             String sel = MediaStore.Video.Media._ID + "=?";
-            Cursor cursor = getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, column, sel, new String[]{ id }, null);
+            Cursor cursor = getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, column, sel, new String[]{id}, null);
             int columnIndex = 0;
             if (cursor != null) {
                 columnIndex = cursor.getColumnIndex(column[0]);
@@ -254,8 +253,7 @@ public class VideoActivity extends AppCompatActivity {
                 }
                 cursor.close();
             }
-        }
-        else {
+        } else {
             String[] projection = {MediaStore.Video.Media.DATA};
             Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
             if (cursor != null) {
@@ -274,13 +272,11 @@ public class VideoActivity extends AppCompatActivity {
         if (video == null || video.equals("")) {
             Toast.makeText(this, "please select a Video ", Toast.LENGTH_LONG).show();
             return;
-        } else if (videoName.getText()== null || videoName.getText().toString().equals(""))
-        {
+        } else if (videoName.getText() == null || videoName.getText().toString().equals("")) {
             Toast.makeText(this, "Please type the Video name ", Toast.LENGTH_LONG).show();
-        }else if (videoStory.getText()== null || videoStory.getText().toString().equals(""))
-        {
+        } else if (videoStory.getText() == null || videoStory.getText().toString().equals("")) {
             Toast.makeText(this, "Please type the story ", Toast.LENGTH_LONG).show();
-        }else {
+        } else {
 
 //            Compression Logic
 //            compressedPath = compressVideo(videoPath);
@@ -294,78 +290,134 @@ public class VideoActivity extends AppCompatActivity {
             String outputPath = storageDirectory + "/" + videoNamestring + "_" + timeStamp + ".mp4";
             final ProgressDialog dialog = new ProgressDialog(VideoActivity.this);
 
-            VideoCompress.compressVideoMedium(videoPath, outputPath, new VideoCompress.CompressListener() {
-                @Override
-                public void onStart() {
+            File file2 = new File(videoPath);
+            long length = file2.length();
+            length = length/1024;
 
-                }
+            if (length > 500000) {
+                VideoCompress.compressVideoMedium(videoPath, outputPath, new VideoCompress.CompressListener() {
+                    @Override
+                    public void onStart() {
 
-                @Override
-                public void onSuccess() {
-                    String state = Environment.getExternalStorageState();
+                    }
 
-                    if (Environment.MEDIA_MOUNTED.equals(state)) {
-                        if (Build.VERSION.SDK_INT >= 23) {
-                            if (checkPermission()) {
-                                showpDialog();
+                    @Override
+                    public void onSuccess() {
+                        String state = Environment.getExternalStorageState();
+
+                        if (Environment.MEDIA_MOUNTED.equals(state)) {
+                            if (Build.VERSION.SDK_INT >= 23) {
+                                if (checkPermission()) {
+                                    showpDialog();
 
 
-                                // Map is used to multipart the file using okhttp3.RequestBody
-                                Map<String, RequestBody> map = new HashMap<>();
+                                    // Map is used to multipart the file using okhttp3.RequestBody
+                                    Map<String, RequestBody> map = new HashMap<>();
 
-                                File file;
-                                file = new File(outputPath);
+                                    File file;
+                                    file = new File(outputPath);
 //             Parsing any Media type file
-                                RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
-                                map.put("file\"; filename=\"" + file.getName() + "\"", requestBody);
+                                    RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
+                                    map.put("file\"; filename=\"" + file.getName() + "\"", requestBody);
 
-                                ApiConfig getResponse = AppConfig.getRetrofit().create(ApiConfig.class);
+                                    ApiConfig getResponse = AppConfig.getRetrofit().create(ApiConfig.class);
 
-                                Call<ServerResponse> call = getResponse.upload("token", map, videoDescription);
-                                call.enqueue(new Callback<ServerResponse>() {
-                                    @Override
-                                    public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                                        if (response.isSuccessful()) {
-                                            if (response.body() != null) {
+                                    Call<ServerResponse> call = getResponse.upload("token", map, videoDescription);
+                                    call.enqueue(new Callback<ServerResponse>() {
+                                        @Override
+                                        public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                                            if (response.isSuccessful()) {
+                                                if (response.body() != null) {
+                                                    hidepDialog();
+                                                    ServerResponse serverResponse = response.body();
+                                                    Toast.makeText(getApplicationContext(), serverResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    videoName.setText("");
+                                                    videoStory.setText("");
+                                                }
+                                            } else {
                                                 hidepDialog();
-                                                ServerResponse serverResponse = response.body();
-                                                Toast.makeText(getApplicationContext(), serverResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                                                videoName.setText("");
-                                                videoStory.setText("");
+                                                Toast.makeText(getApplicationContext(), "problem uploading Video", Toast.LENGTH_SHORT).show();
                                             }
-                                        } else {
-                                            hidepDialog();
-                                            Toast.makeText(getApplicationContext(), "problem uploading Video", Toast.LENGTH_SHORT).show();
                                         }
-                                    }
 
-                                    @Override
-                                    public void onFailure(Call<ServerResponse> call, Throwable t) {
-                                        hidepDialog();
-                                        Log.v("Response gotten is", t.getMessage());
-                                        Toast.makeText(getApplicationContext(), "Network Error " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        @Override
+                                        public void onFailure(Call<ServerResponse> call, Throwable t) {
+                                            hidepDialog();
+                                            Log.v("Response gotten is", t.getMessage());
+                                            Toast.makeText(getApplicationContext(), "Network Error " + t.getMessage(), Toast.LENGTH_SHORT).show();
 
-                                    }
-                                });
+                                        }
+                                    });
+                                }
                             }
                         }
+                        dialog.dismiss();
                     }
-                    dialog.dismiss();
-                }
 
-                @Override
-                public void onFail() {
-                    dialog.dismiss();
-                }
+                    @Override
+                    public void onFail() {
+                        dialog.dismiss();
+                    }
 
-                @Override
-                public void onProgress(float percent) {
-                    dialog.setMessage("Compressing Video "+ Math.round(percent) + "%");
-                    dialog.show();
-                    dialog.setCancelable(false);
-                }
-            });
+                    @Override
+                    public void onProgress(float percent) {
+                        dialog.setMessage("Compressing Video " + Math.round(percent) + "%");
+                        dialog.show();
+                        dialog.setCancelable(false);
+                    }
+                });
+            }
+            else {
+                String state = Environment.getExternalStorageState();
 
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        if (checkPermission()) {
+                            showpDialog();
+
+
+                            // Map is used to multipart the file using okhttp3.RequestBody
+                            Map<String, RequestBody> map = new HashMap<>();
+
+                            File file;
+                            file = new File(videoPath);
+//             Parsing any Media type file
+                            RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
+                            map.put("file\"; filename=\"" + file.getName() + "\"", requestBody);
+
+                            ApiConfig getResponse = AppConfig.getRetrofit().create(ApiConfig.class);
+
+                            Call<ServerResponse> call = getResponse.upload("token", map, videoDescription);
+                            call.enqueue(new Callback<ServerResponse>() {
+                                @Override
+                                public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                                    if (response.isSuccessful()) {
+                                        if (response.body() != null) {
+                                            hidepDialog();
+                                            ServerResponse serverResponse = response.body();
+                                            Toast.makeText(getApplicationContext(), serverResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                            videoName.setText("");
+                                            videoStory.setText("");
+                                        }
+                                    } else {
+                                        hidepDialog();
+                                        Toast.makeText(getApplicationContext(), "problem uploading Video", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ServerResponse> call, Throwable t) {
+                                    hidepDialog();
+                                    Log.v("Response gotten is", t.getMessage());
+                                    Toast.makeText(getApplicationContext(), "Network Error " + t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                        }
+                    }
+                }
+                dialog.dismiss();
+            }
 
         }
     }
@@ -392,7 +444,6 @@ public class VideoActivity extends AppCompatActivity {
 
         if (pDialog.isShowing()) pDialog.dismiss();
     }
-
 
 
     String compressVideo(String videoPath) {
@@ -426,7 +477,7 @@ public class VideoActivity extends AppCompatActivity {
             // Handle if FFmpeg is not supported by device
         }
 
-            // to execute "ffmpeg -version" command you just need to pass "-version"
+        // to execute "ffmpeg -version" command you just need to pass "-version"
 
         checkPermission();
         File storageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/TV9 MoJo Uploads");
@@ -434,13 +485,13 @@ public class VideoActivity extends AppCompatActivity {
         if (!storageDirectory.exists()) storageDirectory.mkdir();
         String videoNamestring = videoName.getText().toString();
         String videoDescription = videoStory.getText().toString();
-        String outputPath = storageDirectory + "/" +videoNamestring +"_" + timeStamp + ".mp4";
+        String outputPath = storageDirectory + "/" + videoNamestring + "_" + timeStamp + ".mp4";
 
 //        String outputPath = tempStorage (videoNamestring);
         String[] commandArray;
         commandArray = new String[]{"-y", "-i", videoPath, "-s", "720x480", "-r", "25",
-                    "-vcodec", "mpeg4", "-b:v", "300k", "-b:a", "48000", "-ac", "2", "-ar", "22050", outputPath};
-            final ProgressDialog dialog = new ProgressDialog(VideoActivity.this);
+                "-vcodec", "mpeg4", "-b:v", "300k", "-b:a", "48000", "-ac", "2", "-ar", "22050", outputPath};
+        final ProgressDialog dialog = new ProgressDialog(VideoActivity.this);
         try {
             ffmpeg.execute(commandArray, new ExecuteBinaryResponseHandler() {
                 @Override
@@ -450,20 +501,24 @@ public class VideoActivity extends AppCompatActivity {
                     dialog.show();
                     dialog.setCancelable(false);
                 }
+
                 @Override
                 public void onProgress(String message) {
 
                     Log.e("FFmpeg onProgress? ", message);
                 }
+
                 @Override
                 public void onFailure(String message) {
                     Log.e("FFmpeg onFailure? ", message);
                 }
+
                 @Override
                 public void onSuccess(String message) {
                     Log.e("FFmpeg onSuccess? ", message);
 
                 }
+
                 @Override
                 public void onFinish() {
                     Log.e("FFmpeg", "onFinish");

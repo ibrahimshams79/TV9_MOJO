@@ -2,7 +2,9 @@ package com.tv9.tv9MoJo;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +33,7 @@ import com.tv9.tv9MoJo.networking.ServerResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.paperdb.Paper;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,25 +46,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ProgressDialog pDialog;
     private long backPressedTime;
     private Toast backToast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        image =  findViewById(R.id.image);
-        video =  findViewById(R.id.video);
-        audio =  findViewById(R.id.audio);
-        pdf =  findViewById(R.id.pdf);
+        image = findViewById(R.id.image);
+        video = findViewById(R.id.video);
+        audio = findViewById(R.id.audio);
+        pdf = findViewById(R.id.pdf);
 
         story = findViewById(R.id.storyWithText);
         descWithText = findViewById(R.id.descriptionWithText);
         submitStory = findViewById(R.id.submitStory);
-        NavigationView navigationView = findViewById(R.id.reporter_nav_view_home);
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+
 
         initDialog();
-        navigationView.setNavigationItemSelectedListener(this);
+
 
         Toolbar toolbar = findViewById(R.id.reporter_drawer_toolbar);
         toolbar.setTitle("Home");
@@ -73,6 +75,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        NavigationView navigationView = findViewById(R.id.reporter_nav_view_home);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.nav_ftp);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             image.setEnabled(false);
@@ -80,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             audio.setEnabled(false);
             pdf.setEnabled(false);
             submitStory.setEnabled(false);
-            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         } else {
             image.setEnabled(true);
             video.setEnabled(true);
@@ -130,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.submitStory:
                 submitStory();
-               break;
+                break;
         }
 
     }
@@ -156,25 +161,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String storyWithText = story.getText().toString();
         String description = descWithText.getText().toString();
 
-        if (storyWithText.isEmpty() || description.isEmpty())
-        {
+        if (storyWithText.isEmpty() || description.isEmpty()) {
             Toast.makeText(this, "Required fields can't be empty", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             ApiConfig getResponse = AppConfig.getRetrofit().create(ApiConfig.class);
             Call<ServerResponse> call = getResponse.uploadTextStory("token", storyWithText, description);
             call.enqueue(new Callback<ServerResponse>() {
                 @Override
                 public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                    if (response.isSuccessful()){
-                        if (response.body() != null){
+                    if (response.isSuccessful()) {
+                        if (response.body() != null) {
                             hidepDialog();
                             ServerResponse serverResponse = response.body();
                             Toast.makeText(getApplicationContext(), serverResponse.getMessage(), Toast.LENGTH_SHORT).show();
                             story.setText("");
                             descWithText.setText("");
                         }
-                    }else {
+                    } else {
                         hidepDialog();
                         Toast.makeText(getApplicationContext(), "problem submitting the story", Toast.LENGTH_SHORT).show();
                     }
@@ -212,11 +215,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.reporter_drawer_menu, menu);
-        return true;
+        return false;
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        int id = item.getItemId();
+
+        if (id == R.id.nav_ftp) {
+            Toast.makeText(getApplicationContext(), "FTP Selected", Toast.LENGTH_SHORT).show();
+
+        } else if (id == R.id.nav_categories) {
+            Toast.makeText(getApplicationContext(), "category Selected", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_settings) {
+            Toast.makeText(getApplicationContext(), "settings Selected", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_logout) {
+            Toast.makeText(getApplicationContext(), "Logout Selected", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
+
+        DrawerLayout drawer = findViewById(R.id.reporter_drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+
     }
 }
