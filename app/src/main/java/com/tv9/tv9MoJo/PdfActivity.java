@@ -7,19 +7,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import com.tv9.tv9MoJo.networking.ApiConfig;
-import com.tv9.tv9MoJo.networking.AppConfig;
-import com.tv9.tv9MoJo.networking.ServerResponse;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
@@ -28,6 +22,9 @@ import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.shockwave.pdfium.PdfDocument;
+import com.tv9.tv9MoJo.networking.ApiConfig;
+import com.tv9.tv9MoJo.networking.AppConfig;
+import com.tv9.tv9MoJo.networking.ServerResponse;
 
 import java.io.File;
 import java.util.HashMap;
