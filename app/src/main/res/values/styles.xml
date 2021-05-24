@@ -23,6 +23,10 @@
     <style name="AppTheme.PopupOverlay">PopupOverlay</style>
     <style name="AppTheme.AppBarOverlay">AppBarOverlay</style>
 
+    <style name="progressBarBlue" parent="@style/Theme.AppCompat">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <!--designs for login and register-->
     <style name="parent">
         <item name="android:layout_width">match_parent</item>

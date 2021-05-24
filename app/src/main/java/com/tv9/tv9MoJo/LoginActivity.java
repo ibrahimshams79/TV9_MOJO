@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +27,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
+import okhttp3.internal.cache.DiskLruCache;
+
 public class LoginActivity extends AppCompatActivity {
 
     private static final int CONNECTION_TIMEOUT = 10000;
@@ -37,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
     String Password_Str, MobileNo_Str, finalResult;
     ProgressDialog progressDialog;
     HashMap<String,String> hashMap = new HashMap<>();
+
+    SharedPreferences sharedPreferences;
 
     String HttpURL = "http://192.168.0.103/LoginRegister/login.php";
     HttpParse httpParse = new HttpParse();
@@ -51,11 +56,21 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.loginTextPassword);
 
         signup_in_login = findViewById(R.id.signup_in_login);
+        sharedPreferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
+        String phoneNo_from_shared = sharedPreferences.getString("PHONENO", null);
+        String password_from_shared = sharedPreferences.getString("PASSWORD", null);
+
+        if (phoneNo_from_shared!=null && password_from_shared!=null){
+
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+        }
 
         //Adding Click Listener on button.
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
 
                 // Checking whether EditText is Empty or Not
                 CheckEditTextIsEmptyOrNot();
@@ -68,6 +83,12 @@ public class LoginActivity extends AppCompatActivity {
                     MobileNo_Str = mobileNo.getText().toString();
                     Password_Str = password.getText().toString();
 
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("PHONENO", MobileNo_Str);
+                    editor.putString("PASSWORD", Password_Str);
+                    editor.apply();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
                     new AsyncLogin().execute(MobileNo_Str, Password_Str);
 
                 } else {
@@ -98,7 +119,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     public void CheckEditTextIsEmptyOrNot() {
