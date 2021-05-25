@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Toast backToast;
     ActionBarDrawerToggle toggle;
     DrawerLayout drawer;
+    SharedPreferences sharedPreferences;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         descWithText = findViewById(R.id.descriptionWithText);
         submitStory = findViewById(R.id.submitStory);
 
+        sharedPreferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
 
         initDialog();
 
@@ -254,6 +258,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.nav_settings) {
             Toast.makeText(getApplicationContext(), "settings Selected", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_logout) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.apply();
             Toast.makeText(getApplicationContext(), "Logout Selected", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

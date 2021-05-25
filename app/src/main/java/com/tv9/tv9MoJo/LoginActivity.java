@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.dynamic.IFragmentWrapper;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -35,13 +37,13 @@ public class LoginActivity extends AppCompatActivity {
     EditText mobileNo, password;
     TextView signup_in_login;
     boolean CheckEditText=false;
-    String Password_Str, MobileNo_Str, finalResult;
-    ProgressDialog progressDialog;
-    HashMap<String,String> hashMap = new HashMap<>();
+    String Password_Str, MobileNo_Str;
+//    ProgressDialog progressDialog;
+//    HashMap<String,String> hashMap = new HashMap<>();
     SharedPreferences sharedPreferences;
 
-    String HttpURL = "http://192.168.0.103/LoginRegister/login.php";
-    HttpParse httpParse = new HttpParse();
+    String HttpURL = "http://192.168.0.104/LoginRegister/login.php";
+//    HttpParse httpParse = new HttpParse();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,14 @@ public class LoginActivity extends AppCompatActivity {
         signup_in_login = findViewById(R.id.signup_in_login);
         sharedPreferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
 
+        String phoneno = sharedPreferences.getString("PHONENO", MobileNo_Str);
+        String pass = sharedPreferences.getString("PASSWORD", Password_Str);
+
+        if (phoneno!=null && pass!=null){
+            Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+        }
 
         //Adding Click Listener on button.
         loginButton.setOnClickListener(new View.OnClickListener() {
