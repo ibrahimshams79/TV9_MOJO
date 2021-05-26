@@ -192,7 +192,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (storyWithText.isEmpty() || description.isEmpty()) {
             Toast.makeText(this, "Required fields can't be empty", Toast.LENGTH_SHORT).show();
         } else {
-            ApiConfig getResponse = AppConfig.getRetrofit().create(ApiConfig.class);
+            String url = "http://192.168.0.104/tv9/";
+            ApiConfig getResponse = AppConfig.getRetrofit(url).create(ApiConfig.class);
             Call<ServerResponse> call = getResponse.uploadTextStory("token", storyWithText, description);
             call.enqueue(new Callback<ServerResponse>() {
                 @Override
