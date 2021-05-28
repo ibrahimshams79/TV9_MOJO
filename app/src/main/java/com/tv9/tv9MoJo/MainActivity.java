@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ActionBarDrawerToggle toggle;
     DrawerLayout drawer;
     SharedPreferences sharedPreferences;
-
+    String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sharedPreferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
 
         initDialog();
-
 
         Toolbar toolbar = findViewById(R.id.reporter_drawer_toolbar);
         toolbar.setTitle("Home");
@@ -147,18 +146,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.image:
                 Intent intent = new Intent(this, ImageActivity.class);
+                intent.putExtra("url", url);
                 startActivity(intent);
                 break;
             case R.id.video:
                 Intent intent2 = new Intent(this, VideoActivity.class);
+                intent2.putExtra("url", url);
                 startActivity(intent2);
                 break;
             case R.id.audio:
                 Intent intent3 = new Intent(this, AudioActivity.class);
+                intent3.putExtra("url", url);
                 startActivity(intent3);
                 break;
             case R.id.pdf:
                 Intent intent4 = new Intent(this, PdfActivity.class);
+                intent4.putExtra("url", url);
                 startActivity(intent4);
                 break;
             case R.id.submitStory:
@@ -192,7 +195,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (storyWithText.isEmpty() || description.isEmpty()) {
             Toast.makeText(this, "Required fields can't be empty", Toast.LENGTH_SHORT).show();
         } else {
-            ApiConfig getResponse = AppConfig.getRetrofit().create(ApiConfig.class);
+//            String url="http://192.168.0.104/tv9/";
+            String Durl = getIntent().getStringExtra("url");
+            ApiConfig getResponse = AppConfig.getRetrofit(Durl).create(ApiConfig.class);
             Call<ServerResponse> call = getResponse.uploadTextStory("token", storyWithText, description);
             call.enqueue(new Callback<ServerResponse>() {
                 @Override
@@ -261,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.clear();
             editor.apply();
-            Toast.makeText(getApplicationContext(), "Logout Selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Logout Success", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

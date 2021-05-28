@@ -13,13 +13,13 @@ public class AppConfig {
 
 //   public static String BASE_URL = "https://files.000webhost.com/TV9";
 
-    public static Retrofit getRetrofit() {
+    public static Retrofit getRetrofit(String url) {
 
 //        Gson gson = new GsonBuilder()
 //                .setLenient().create();
 
         return new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 //        OkHttpClient httpClient;

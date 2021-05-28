@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (phoneno!=null && pass!=null){
             Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), InitialActivity.class);
             startActivity(intent);
         }
 
@@ -196,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
                 url = new URL(HttpURL);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-                return "exception";
+                return "DoInBackground Exception1";
             }
             try {
                 connection = (HttpURLConnection)url.openConnection();
@@ -221,7 +221,7 @@ public class LoginActivity extends AppCompatActivity {
                 connection.connect();
             } catch (IOException e1) {
                 e1.printStackTrace();
-                return "exception";
+                return "DoInBackground exception2";
             }
 
             try {
@@ -242,7 +242,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                return "exception";
+                return "DoInBackground exception3";
             } finally {
                 connection.disconnect();
             }
@@ -260,13 +260,13 @@ public class LoginActivity extends AppCompatActivity {
                 editor.apply();
 
                 Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), InitialActivity.class);
                 startActivity(intent);
                 finish();
             } else if (result.equalsIgnoreCase("false")){
                 Toast.makeText(getApplicationContext(), "Invalid Email or Password.", Toast.LENGTH_LONG).show();
-            } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
-                Toast.makeText(getApplicationContext(), "Something else went wrong.", Toast.LENGTH_LONG).show();
+            } else{
+                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
             }
         }
     }

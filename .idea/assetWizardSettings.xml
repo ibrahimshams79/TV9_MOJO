@@ -340,7 +340,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialiconsoutlined/settings/outline_settings_24.xml" />
+                                      <entry key="url" value="file:/$PROJECT_DIR$/../../SDK/icons/material/materialiconsoutlined/library_add/outline_library_add_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -350,8 +350,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="fff3e9" />
-                            <entry key="outputName" value="ic_outline_settings_24" />
+                            <entry key="outputName" value="ic_outline_library_add_24" />
                             <entry key="sourceFile" value="D:\Android Projects\TV9 MOJO" />
                           </map>
                         </option>

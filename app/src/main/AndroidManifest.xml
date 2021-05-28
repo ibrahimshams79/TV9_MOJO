@@ -64,6 +64,9 @@
         <activity
             android:name=".VideoActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".InitialActivity"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

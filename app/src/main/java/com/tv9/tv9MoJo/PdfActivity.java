@@ -210,8 +210,8 @@ public class PdfActivity extends AppCompatActivity implements OnPageChangeListen
             // Parsing any Media type file
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/pdf"), file);
             map.put("file\"; filename=\"" + file.getName() + "\"", requestBody);
-
-            ApiConfig getResponse = AppConfig.getRetrofit().create(ApiConfig.class);
+            String url="http://192.168.0.104/tv9/";
+            ApiConfig getResponse = AppConfig.getRetrofit(url).create(ApiConfig.class);
             Call<ServerResponse> call = getResponse.uploadpdf("token", map, pdfStory.getText().toString());
             call.enqueue(new Callback<ServerResponse>() {
                 @Override
