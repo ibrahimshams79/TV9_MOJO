@@ -27,8 +27,11 @@ import com.tv9.tv9MoJo.networking.AppConfig;
 import com.tv9.tv9MoJo.networking.ServerResponse;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -207,11 +210,14 @@ public class PdfActivity extends AppCompatActivity implements OnPageChangeListen
 //            Map<String, String> story = new HashMap<>();
 //            story.put("story", "imageStory");
             File file = new File(pdfPath);
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
+            String fileNameUploaded = pdfStoryName.getText().toString()+ "_" + timeStamp;
             // Parsing any Media type file
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/pdf"), file);
-            map.put("file\"; filename=\"" + file.getName() + "\"", requestBody);
-            String url="http://192.168.0.104/tv9/";
-            ApiConfig getResponse = AppConfig.getRetrofit(url).create(ApiConfig.class);
+            map.put("file\"; filename=\"" + fileNameUploaded +"_"+file.getName() + "\"", requestBody);
+//            String url="http://192.168.0.104/tv9/";
+            String Durl = getIntent().getStringExtra("url");
+            ApiConfig getResponse = AppConfig.getRetrofit(Durl).create(ApiConfig.class);
             Call<ServerResponse> call = getResponse.uploadpdf("token", map, pdfStory.getText().toString());
             call.enqueue(new Callback<ServerResponse>() {
                 @Override

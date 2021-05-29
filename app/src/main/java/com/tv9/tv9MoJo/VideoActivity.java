@@ -39,6 +39,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -172,9 +173,9 @@ public class VideoActivity extends AppCompatActivity {
                 new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
-                        Toast.makeText(VideoActivity.this,
-                                R.string.toast_message,
-                                Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(VideoActivity.this,
+//                                R.string.toast_message,
+//                                Toast.LENGTH_SHORT).show();
 
                         // Return the video position to the start.
                         mVideoView.seekTo(0);
@@ -200,8 +201,6 @@ public class VideoActivity extends AppCompatActivity {
 
                     videoPath = getPathFromURI(video);
 
-
-//
                     initializePlayer(video);
                 }
             }
@@ -283,7 +282,7 @@ public class VideoActivity extends AppCompatActivity {
 
             checkPermission();
             File storageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/TV9 MoJo Uploads");
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmSS").format(new Date());
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
             if (!storageDirectory.exists()) storageDirectory.mkdir();
             String videoNamestring = videoName.getText().toString();
             String videoDescription = videoStory.getText().toString();
@@ -292,9 +291,9 @@ public class VideoActivity extends AppCompatActivity {
 
             File file2 = new File(videoPath);
             long length = file2.length();
-            length = length/1024;
+            length = length / 1024;
 
-            if (length > 500000) {
+            if (length > 50000) {
                 VideoCompress.compressVideoMedium(videoPath, outputPath, new VideoCompress.CompressListener() {
                     @Override
                     public void onStart() {
@@ -319,8 +318,9 @@ public class VideoActivity extends AppCompatActivity {
 //             Parsing any Media type file
                                     RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
                                     map.put("file\"; filename=\"" + file.getName() + "\"", requestBody);
-                                    String url="http://192.168.0.104/tv9/";
-                                    ApiConfig getResponse = AppConfig.getRetrofit(url).create(ApiConfig.class);
+//                                    String url="http://192.168.0.104/tv9/";
+                                    String Durl = getIntent().getStringExtra("url");
+                                    ApiConfig getResponse = AppConfig.getRetrofit(Durl).create(ApiConfig.class);
 
                                     Call<ServerResponse> call = getResponse.upload("token", map, videoDescription);
                                     call.enqueue(new Callback<ServerResponse>() {
@@ -366,8 +366,7 @@ public class VideoActivity extends AppCompatActivity {
                         dialog.setCancelable(false);
                     }
                 });
-            }
-            else {
+            } else {
                 String state = Environment.getExternalStorageState();
 
                 if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -381,11 +380,14 @@ public class VideoActivity extends AppCompatActivity {
 
                             File file;
                             file = new File(videoPath);
+                            String videoNameUploaded = videoNamestring + "_" + timeStamp + ".mp4";
+
 //             Parsing any Media type file
                             RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
-                            map.put("file\"; filename=\"" + file.getName() + "\"", requestBody);
-                            String url="http://192.168.0.104/tv9/";
-                            ApiConfig getResponse = AppConfig.getRetrofit(url).create(ApiConfig.class);
+                            map.put("file\"; filename=\"" + videoNameUploaded, requestBody);
+//                            String url="http://192.168.0.104/tv9/";
+                            String Durl = getIntent().getStringExtra("url");
+                            ApiConfig getResponse = AppConfig.getRetrofit(Durl).create(ApiConfig.class);
 
                             Call<ServerResponse> call = getResponse.upload("token", map, videoDescription);
                             call.enqueue(new Callback<ServerResponse>() {
@@ -446,164 +448,165 @@ public class VideoActivity extends AppCompatActivity {
     }
 
 
-    String compressVideo(String videoPath) {
-//        String inputVideoPath = getPath(this, video);
-        Log.d("doFileUpload ", videoPath);
-        FFmpeg ffmpeg = FFmpeg.getInstance(this);
-        try {
-            //Load the binary
-            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
-                @Override
-                public void onStart() {
-                    Log.d("FFmpeg", "onStart");
-                }
+//    String compressVideo(String videoPath) {
+////        String inputVideoPath = getPath(this, video);
+//        Log.d("doFileUpload ", videoPath);
+//        FFmpeg ffmpeg = FFmpeg.getInstance(this);
+//        try {
+//            //Load the binary
+//            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
+//                @Override
+//                public void onStart() {
+//                    Log.d("FFmpeg", "onStart");
+//                }
+//
+//                @Override
+//                public void onFailure() {
+//                    Log.d("FFmpeg", "onFailure");
+//                }
+//
+//                @Override
+//                public void onSuccess() {
+//                    Log.d("FFmpeg", "onSuccess");
+//                }
+//
+//                @Override
+//                public void onFinish() {
+//                    Log.d("FFmpeg", "onFinish");
+//                }
+//            });
+//        } catch (FFmpegNotSupportedException e) {
+//            // Handle if FFmpeg is not supported by device
+//        }
+//
+//        // to execute "ffmpeg -version" command you just need to pass "-version"
+//
+//        checkPermission();
+//        File storageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/TV9 MoJo Uploads");
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmSS").format(new Date());
+//        if (!storageDirectory.exists()) storageDirectory.mkdir();
+//        String videoNamestring = videoName.getText().toString();
+//        String videoDescription = videoStory.getText().toString();
+//        String outputPath = storageDirectory + "/" + videoNamestring + "_" + timeStamp + ".mp4";
+//
+////        String outputPath = tempStorage (videoNamestring);
+//        String[] commandArray;
+//        commandArray = new String[]{"-y", "-i", videoPath, "-s", "720x480", "-r", "25",
+//                "-vcodec", "mpeg4", "-b:v", "300k", "-b:a", "48000", "-ac", "2", "-ar", "22050", outputPath};
+//        final ProgressDialog dialog = new ProgressDialog(VideoActivity.this);
+//        try {
+//            ffmpeg.execute(commandArray, new ExecuteBinaryResponseHandler() {
+//                @Override
+//                public void onStart() {
+//                    Log.e("FFmpeg", "onStart" + outputPath);
+//                    dialog.setMessage("Compressing... please wait");
+//                    dialog.show();
+//                    dialog.setCancelable(false);
+//                }
+//
+//                @Override
+//                public void onProgress(String message) {
+//
+//                    Log.e("FFmpeg onProgress? ", message);
+//                }
+//
+//                @Override
+//                public void onFailure(String message) {
+//                    Log.e("FFmpeg onFailure? ", message);
+//                }
+//
+//                @Override
+//                public void onSuccess(String message) {
+//                    Log.e("FFmpeg onSuccess? ", message);
+//
+//                }
+//
+//                @Override
+//                public void onFinish() {
+//                    Log.e("FFmpeg", "onFinish");
+//                    if (dialog.isShowing())
+//                        dialog.dismiss();
+////                    initializePlayer(Uri.parse(outputPath));
+//                    String state = Environment.getExternalStorageState();
+//
+//                    if (Environment.MEDIA_MOUNTED.equals(state)) {
+//                        if (Build.VERSION.SDK_INT >= 23) {
+//                            if (checkPermission()) {
+//                                showpDialog();
+//
+//
+//                                // Map is used to multipart the file using okhttp3.RequestBody
+//                                Map<String, RequestBody> map = new HashMap<>();
+//
+//                                File file;
+//                                file = new File(compressedPath);
+////             Parsing any Media type file
+//                                RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
+//                                map.put("file\"; filename=\"" + file.getName() + "\"", requestBody);
+////                                String url = "http://192.168.0.104/tv9/";
+//                                String Durl = getIntent().getStringExtra("url");
+//                                ApiConfig getResponse = AppConfig.getRetrofit(Durl).create(ApiConfig.class);
+//
+//                                Call<ServerResponse> call = getResponse.upload("token", map, videoDescription);
+//                                call.enqueue(new Callback<ServerResponse>() {
+//                                    @Override
+//                                    public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+//                                        if (response.isSuccessful()) {
+//                                            if (response.body() != null) {
+//                                                hidepDialog();
+//                                                ServerResponse serverResponse = response.body();
+//                                                Toast.makeText(getApplicationContext(), serverResponse.getMessage(), Toast.LENGTH_SHORT).show();
+//
+//                                            }
+//                                        } else {
+//                                            hidepDialog();
+//                                            Toast.makeText(getApplicationContext(), "problem uploading Video", Toast.LENGTH_SHORT).show();
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void onFailure(Call<ServerResponse> call, Throwable t) {
+//                                        hidepDialog();
+//                                        Log.v("Response gotten is", t.getMessage());
+//                                        Toast.makeText(getApplicationContext(), "Network Error " + t.getMessage(), Toast.LENGTH_SHORT).show();
+//
+//                                    }
+//                                });
+//                            }
+//                        }
+//                    }
+//
+//                }
+//            });
+//        } catch (FFmpegCommandAlreadyRunningException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return outputPath;
+//    }
 
-                @Override
-                public void onFailure() {
-                    Log.d("FFmpeg", "onFailure");
-                }
-
-                @Override
-                public void onSuccess() {
-                    Log.d("FFmpeg", "onSuccess");
-                }
-
-                @Override
-                public void onFinish() {
-                    Log.d("FFmpeg", "onFinish");
-                }
-            });
-        } catch (FFmpegNotSupportedException e) {
-            // Handle if FFmpeg is not supported by device
-        }
-
-        // to execute "ffmpeg -version" command you just need to pass "-version"
-
-        checkPermission();
-        File storageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/TV9 MoJo Uploads");
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmSS").format(new Date());
-        if (!storageDirectory.exists()) storageDirectory.mkdir();
-        String videoNamestring = videoName.getText().toString();
-        String videoDescription = videoStory.getText().toString();
-        String outputPath = storageDirectory + "/" + videoNamestring + "_" + timeStamp + ".mp4";
-
-//        String outputPath = tempStorage (videoNamestring);
-        String[] commandArray;
-        commandArray = new String[]{"-y", "-i", videoPath, "-s", "720x480", "-r", "25",
-                "-vcodec", "mpeg4", "-b:v", "300k", "-b:a", "48000", "-ac", "2", "-ar", "22050", outputPath};
-        final ProgressDialog dialog = new ProgressDialog(VideoActivity.this);
-        try {
-            ffmpeg.execute(commandArray, new ExecuteBinaryResponseHandler() {
-                @Override
-                public void onStart() {
-                    Log.e("FFmpeg", "onStart" + outputPath);
-                    dialog.setMessage("Compressing... please wait");
-                    dialog.show();
-                    dialog.setCancelable(false);
-                }
-
-                @Override
-                public void onProgress(String message) {
-
-                    Log.e("FFmpeg onProgress? ", message);
-                }
-
-                @Override
-                public void onFailure(String message) {
-                    Log.e("FFmpeg onFailure? ", message);
-                }
-
-                @Override
-                public void onSuccess(String message) {
-                    Log.e("FFmpeg onSuccess? ", message);
-
-                }
-
-                @Override
-                public void onFinish() {
-                    Log.e("FFmpeg", "onFinish");
-                    if (dialog.isShowing())
-                        dialog.dismiss();
-//                    initializePlayer(Uri.parse(outputPath));
-                    String state = Environment.getExternalStorageState();
-
-                    if (Environment.MEDIA_MOUNTED.equals(state)) {
-                        if (Build.VERSION.SDK_INT >= 23) {
-                            if (checkPermission()) {
-                                showpDialog();
-
-
-                                // Map is used to multipart the file using okhttp3.RequestBody
-                                Map<String, RequestBody> map = new HashMap<>();
-
-                                File file;
-                                file = new File(compressedPath);
-//             Parsing any Media type file
-                                RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
-                                map.put("file\"; filename=\"" + file.getName() + "\"", requestBody);
-                                String url="http://192.168.0.104/tv9/";
-                                ApiConfig getResponse = AppConfig.getRetrofit(url).create(ApiConfig.class);
-
-                                Call<ServerResponse> call = getResponse.upload("token", map, videoDescription);
-                                call.enqueue(new Callback<ServerResponse>() {
-                                    @Override
-                                    public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                                        if (response.isSuccessful()) {
-                                            if (response.body() != null) {
-                                                hidepDialog();
-                                                ServerResponse serverResponse = response.body();
-                                                Toast.makeText(getApplicationContext(), serverResponse.getMessage(), Toast.LENGTH_SHORT).show();
-
-                                            }
-                                        } else {
-                                            hidepDialog();
-                                            Toast.makeText(getApplicationContext(), "problem uploading Video", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<ServerResponse> call, Throwable t) {
-                                        hidepDialog();
-                                        Log.v("Response gotten is", t.getMessage());
-                                        Toast.makeText(getApplicationContext(), "Network Error " + t.getMessage(), Toast.LENGTH_SHORT).show();
-
-                                    }
-                                });
-                            }
-                        }
-                    }
-
-                }
-            });
-        } catch (FFmpegCommandAlreadyRunningException e) {
-            e.printStackTrace();
-        }
-
-        return outputPath;
-    }
-
-    String tempStorage(String fileName) {
-        Logger.getAnonymousLogger().info("Generating the image - method started");
-
-        // Here we create a "non-collision file name", alternatively said, "an unique filename" using the "timeStamp" functionality
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmSS").format(new Date());
-        String videoName = fileName + "_" + timeStamp;
-        // Here we specify the environment location and the exact path where we want to save the so-created file
-        File storageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/TV9 MoJo Uploads");
-        Logger.getAnonymousLogger().info("Storage directory set");
-
-        // Then we create the storage directory if does not exists
-        if (!storageDirectory.exists()) storageDirectory.mkdir();
-
-        // Here we create the file using a prefix, a suffix and a directory
-        File video = new File(storageDirectory, videoName + ".mp4");
-
-        // Here the location is saved into the string mImageFileLocation
-        Logger.getAnonymousLogger().info("File name and path set");
-
-        mImageFileLocation = video.getAbsolutePath();
-        // fileUri = Uri.parse(mImageFileLocation);
-        // The file is returned to the previous intent across the camera application
-        return mImageFileLocation;
-    }
+//    String tempStorage(String fileName) {
+//        Logger.getAnonymousLogger().info("Generating the image - method started");
+//
+//        // Here we create a "non-collision file name", alternatively said, "an unique filename" using the "timeStamp" functionality
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmSS").format(new Date());
+//        String videoName = fileName + "_" + timeStamp;
+//        // Here we specify the environment location and the exact path where we want to save the so-created file
+//        File storageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/TV9 MoJo Uploads");
+//        Logger.getAnonymousLogger().info("Storage directory set");
+//
+//        // Then we create the storage directory if does not exists
+//        if (!storageDirectory.exists()) storageDirectory.mkdir();
+//
+//        // Here we create the file using a prefix, a suffix and a directory
+//        File video = new File(storageDirectory, videoName + ".mp4");
+//
+//        // Here the location is saved into the string mImageFileLocation
+//        Logger.getAnonymousLogger().info("File name and path set");
+//
+//        mImageFileLocation = video.getAbsolutePath();
+//        // fileUri = Uri.parse(mImageFileLocation);
+//        // The file is returned to the previous intent across the camera application
+//        return mImageFileLocation;
+//    }
 }

@@ -80,25 +80,26 @@
 
             </LinearLayout>
 
+        <View
+            android:id="@+id/line4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="20dp"
+            android:background="#5973B6"
+            android:layout_below="@id/line2"/>
+
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/line2">
+            android:layout_below="@id/line4">
 
             <RelativeLayout
                 android:id="@+id/r1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-            <View
-                android:id="@+id/line4"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginRight="20dp"
-                android:background="#5973B6" />
 
             <TextView
                 android:id="@+id/text3"

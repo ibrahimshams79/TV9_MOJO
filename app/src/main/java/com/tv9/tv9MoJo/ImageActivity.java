@@ -468,8 +468,9 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
 //            RequestBody storyDescription = RequestBody.create(MultipartBody.FORM, imageStory);
 //            String stringdescription = imageStory;
 //            story.put("story", imageStory);
-            String url="http://192.168.0.104/tv9/";
-            ApiConfig getResponse = AppConfig.getRetrofit(url).create(ApiConfig.class);
+//            String url="http://192.168.0.104/tv9/";
+            String Durl = getIntent().getStringExtra("url");
+            ApiConfig getResponse = AppConfig.getRetrofit(Durl).create(ApiConfig.class);
             Call<ServerResponse> call = getResponse.upload("token", map, imageStory);
             call.enqueue(new Callback<ServerResponse>() {
                 @Override

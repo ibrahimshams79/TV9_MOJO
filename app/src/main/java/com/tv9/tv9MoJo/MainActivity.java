@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         submitStory = findViewById(R.id.submitStory);
 
         sharedPreferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
-
+        url= getIntent().getStringExtra("url");
         initDialog();
 
         Toolbar toolbar = findViewById(R.id.reporter_drawer_toolbar);

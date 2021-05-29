@@ -237,13 +237,13 @@ public class AudioActivity extends AppCompatActivity implements View.OnClickList
     private void uploadFile() throws IOException {
         {
             if (selectedPath == null || selectedPath.equals("")) {
-                Toast.makeText(this, "Please select an Image ", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Please select audio file ", Toast.LENGTH_LONG).show();
             }else if (audiofileName.getText()== null || audiofileName.getText().toString().equals(""))
             {
-                Toast.makeText(this, "Please type the Image name ", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Please type the Story/File name ", Toast.LENGTH_LONG).show();
             }else if (audiostory.getText()== null || audiostory.getText().toString().equals(""))
             {
-                Toast.makeText(this, "Please type the story ", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Please type the story/Description ", Toast.LENGTH_LONG).show();
             }
             else {
                 showpDialog();
@@ -286,8 +286,9 @@ public class AudioActivity extends AppCompatActivity implements View.OnClickList
                 RequestBody storyDescription = RequestBody.create(MultipartBody.FORM, imageStory);
                 String stringdescription = imageStory;
 //            story.put("story", imageStory);
-                String url="http://192.168.0.104/tv9/";
-                ApiConfig getResponse = AppConfig.getRetrofit(url).create(ApiConfig.class);
+//                String url="http://192.168.0.104/tv9/";
+                String Durl = getIntent().getStringExtra("url");
+                ApiConfig getResponse = AppConfig.getRetrofit(Durl).create(ApiConfig.class);
                 Call<ServerResponse> call = getResponse.upload("token", map, stringdescription);
                 call.enqueue(new Callback<ServerResponse>() {
                     @Override
