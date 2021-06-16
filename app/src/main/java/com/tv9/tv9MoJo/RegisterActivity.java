@@ -27,7 +27,8 @@ public class RegisterActivity extends AppCompatActivity {
     EditText Full_Name, Password, Mobile;
     String FullName, MobileHolder, PasswordHolder;
     //    String finalResult;
-    String HttpURL = "http://192.168.0.104/LoginRegister/signup.php";
+    String HttpURL = "http://192.168.43.68/LoginRegister/signup.php";
+//    String HttpURL = "http://43.254.161.59/LoginRegister/signup.php";
 //    Boolean CheckEditText;
 //    ProgressDialog progressDialog;
 //    HashMap<String, String> hashMap = new HashMap<>();

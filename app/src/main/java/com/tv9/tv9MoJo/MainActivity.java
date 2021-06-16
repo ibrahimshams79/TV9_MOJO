@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         sharedPreferences = getSharedPreferences("SHARED_PREF", MODE_PRIVATE);
         url= getIntent().getStringExtra("url");
+//        String url = "http://43.254.161.59/tv9/";
         initDialog();
 
         Toolbar toolbar = findViewById(R.id.reporter_drawer_toolbar);

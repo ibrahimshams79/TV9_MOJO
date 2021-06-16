@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -52,11 +53,13 @@ public class InitialActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
     private ListView homeListView;
-    private List<HashMap<String,Object>> homeSimpleAdaptList;;
+    private List<HashMap<String, Object>> homeSimpleAdaptList;
+    ;
     private SimpleAdapter homeSimpleAdapter;
 
     private com.baoyz.swipemenulistview.SwipeMenuListView ftpListView;
-    private List<HashMap<String,Object>> ftpSimpleAdaptList;;
+    private List<HashMap<String, Object>> ftpSimpleAdaptList;
+    ;
     private SimpleAdapter ftpSimpleAdapter;
 
     private Button newFTPButton;
@@ -114,10 +117,10 @@ public class InitialActivity extends AppCompatActivity {
         }
 
         //Traversing the array, assigning the data to ftpSimpleAdaptList, tells listview to update the data through the bound adapter
-        for (int i=0; i<hostNamesCopy.size(); i++) {
+        for (int i = 0; i < hostNamesCopy.size(); i++) {
             HashMap<String, Object> hashMap
                     = new HashMap<>();
-            hashMap.put("icon",R.drawable.ftp2);
+            hashMap.put("icon", R.drawable.ftp2);
             hashMap.put("name", userNamesCopy.get(i) + "@" + hostNamesCopy.get(i));
             //Note that String comparisons are address comparisons
             if (canLoginCopy.get(i).contentEquals("false")) {
@@ -141,8 +144,8 @@ public class InitialActivity extends AppCompatActivity {
         int[] to1 = {R.id.cell_image, R.id.cell_name};
         HashMap<String, Object> hashMap
                 = new HashMap<>();
-        hashMap.put("icon",R.drawable.home);
-        hashMap.put("name","Local Home");
+        hashMap.put("icon", R.drawable.home);
+        hashMap.put("name", "Local Home");
         homeSimpleAdaptList.add(hashMap);
         homeSimpleAdapter = new SimpleAdapter(getApplicationContext(), homeSimpleAdaptList, R.layout.cell, from1, to1);
 //        homeListView.setAdapter(homeSimpleAdapter);
@@ -162,7 +165,7 @@ public class InitialActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        //Write a click-to-response event for My Local Files: The page jumps into LotalHomeActivity
+        //Write a click-to-response event for My Local Files: The page jumps into LocalHomeActivity
 //        homeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -199,7 +202,7 @@ public class InitialActivity extends AppCompatActivity {
 
                                     HashMap<String, Object> hashMap
                                             = new HashMap<>();
-                                    hashMap.put("icon",R.drawable.ftp2);
+                                    hashMap.put("icon", R.drawable.ftp2);
                                     hashMap.put("name", userNamesCopy.get(position) + "@" + hostNamesCopy.get(position));
                                     ftpSimpleAdaptList.remove(position);
                                     ftpSimpleAdaptList.add(position, hashMap);
@@ -208,9 +211,9 @@ public class InitialActivity extends AppCompatActivity {
                                 }
 
                                 Intent intent = new Intent(InitialActivity.this, MainActivity.class);
-                                intent.putExtra("url", "http://"+hostNamesCopy.get(position)+"/tv9/");
+                                intent.putExtra("url", "http://" + hostNamesCopy.get(position) + "/tv9/");
                                 startActivity(intent);
-                                showToast("Connected to " +hostNamesCopy.get(position));
+                                showToast("Connected to " + hostNamesCopy.get(position));
                             } else {
                                 showToast("\n" + "Login failed");
                             }
@@ -223,7 +226,7 @@ public class InitialActivity extends AppCompatActivity {
 
                                 HashMap<String, Object> hashMap
                                         = new HashMap<>();
-                                hashMap.put("icon",R.drawable.ftp2);
+                                hashMap.put("icon", R.drawable.ftp2);
                                 hashMap.put("name", userNamesCopy.get(position) + "@" + hostNamesCopy.get(position) + "(failure)");
                                 ftpSimpleAdaptList.remove(position);
                                 ftpSimpleAdaptList.add(position, hashMap);
@@ -303,8 +306,6 @@ public class InitialActivity extends AppCompatActivity {
                 cusDia.setPositiveButton("save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        loadingView.smoothToShow();
-                        loadText.setVisibility(View.VISIBLE);
 
                         EditText hostName = cusView.findViewById(R.id.host_name);
                         EditText userName = cusView.findViewById(R.id.user_name);
@@ -314,64 +315,87 @@ public class InitialActivity extends AppCompatActivity {
                         final String userNameString = userName.getText().toString().trim();
                         final String userPasswordString = userPassword.getText().toString().trim();
 
-                        hostNamesCopy.add(hostNameString);
-                        userNamesCopy.add(userNameString);
-                        userPasswordsCopy.add(userPasswordString);
-                        canLoginCopy.add("false");
+                        if (TextUtils.isEmpty(hostNameString) || TextUtils.isEmpty(userNameString) || TextUtils.isEmpty(userPasswordString)) {
 
-                        final HashMap<String, Object> hashMap
-                                = new HashMap<>();
-                        hashMap.put("icon",R.drawable.ftp2);
-                        hashMap.put("name", userNameString + "@" + hostNameString);
-                        ftpSimpleAdaptList.add(hashMap);
-                        ftpSimpleAdapter.notifyDataSetChanged();
+                            new AlertDialog.Builder(InitialActivity.this)
+                                    .setTitle("Login")
+                                    .setMessage("Please fill all fields")
 
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    currentUser = userNameString;
-                                    currentHost = hostNameString;
-                                    currentPassword = userPasswordString;
-                                    login();
+                                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                                    // The dialog is automatically dismissed when a dialog button is clicked.
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
 
-                                    if (InitialActivity.client.isConnected()) {
-                                        canLoginCopy.remove(canLoginCopy.size()-1);
-                                        canLoginCopy.add("true");
-                                        setSharedPreference("can_login", "true");
+                                        }
+                                    })
+
+                                    // A null listener allows the button to dismiss the dialog and take no further action.
+                                    .setNegativeButton(android.R.string.cancel, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+
+                        } else {
+                            loadingView.smoothToShow();
+                            loadText.setVisibility(View.VISIBLE);
+                            hostNamesCopy.add(hostNameString);
+                            userNamesCopy.add(userNameString);
+                            userPasswordsCopy.add(userPasswordString);
+                            canLoginCopy.add("false");
+
+                            final HashMap<String, Object> hashMap
+                                    = new HashMap<>();
+                            hashMap.put("icon", R.drawable.ftp2);
+                            hashMap.put("name", userNameString + "@" + hostNameString);
+                            ftpSimpleAdaptList.add(hashMap);
+                            ftpSimpleAdapter.notifyDataSetChanged();
+
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        currentUser = userNameString;
+                                        currentHost = hostNameString;
+                                        currentPassword = userPasswordString;
+                                        login();
+
+                                        if (InitialActivity.client.isConnected()) {
+                                            canLoginCopy.remove(canLoginCopy.size() - 1);
+                                            canLoginCopy.add("true");
+                                            setSharedPreference("can_login", "true");
+                                            setSharedPreference("host_name", hostNameString);
+                                            setSharedPreference("user_name", userNameString);
+                                            setSharedPreference("user_password", userPasswordString);
+
+                                            showToast("login successful");
+                                            hideLoadView();
+
+                                            Intent intent = new Intent(InitialActivity.this, MainActivity.class);
+                                            intent.putExtra("url", "http://" + hostNamesCopy + "/tv9/");
+                                            startActivity(intent);
+                                        } else {
+                                            showToast("\n" + "Login failed");
+//                                        showToast("Connected to " +hostNameString);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+
+                                        setSharedPreference("can_login", "false");
                                         setSharedPreference("host_name", hostNameString);
                                         setSharedPreference("user_name", userNameString);
                                         setSharedPreference("user_password", userPasswordString);
 
-                                        showToast("login successful");
+                                        hashMap.put("name", userNameString + "@" + hostNameString + "(failure)");
+                                        ftpSimpleAdaptList.remove(ftpSimpleAdaptList.size() - 1);
+                                        ftpSimpleAdaptList.add(hashMap);
+
+
+                                        notifyDataChanged();
+                                        showToast("Login failed");
                                         hideLoadView();
-
-                                        Intent intent = new Intent(InitialActivity.this, MainActivity.class);
-                                        intent.putExtra("url", "http://"+hostNamesCopy+"/tv9/");
-                                        startActivity(intent);
-                                    } else {
-                                        showToast("\n" + "Login failed");
-//                                        showToast("Connected to " +hostNameString);
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-
-                                    setSharedPreference("can_login", "false");
-                                    setSharedPreference("host_name", hostNameString);
-                                    setSharedPreference("user_name", userNameString);
-                                    setSharedPreference("user_password", userPasswordString);
-
-                                    hashMap.put("name", userNameString + "@" + hostNameString + "(failure)");
-                                    ftpSimpleAdaptList.remove(ftpSimpleAdaptList.size()-1);
-                                    ftpSimpleAdaptList.add(hashMap);
-
-
-                                    notifyDataChanged();
-                                    showToast("Login failed");
-                                    hideLoadView();
                                 }
-                            }
-                        }).start();
+                            }).start();
+                        }
                     }
                 });
 
@@ -388,9 +412,6 @@ public class InitialActivity extends AppCompatActivity {
     }
 
 
-
-
-
     public String[] getSharedPreference(String key) {
         String regularEx = "#";
         String[] str;
@@ -401,6 +422,7 @@ public class InitialActivity extends AppCompatActivity {
 
         return str;
     }
+
     public void setSharedPreferenceValues(String key, ArrayList<String> values) {
         String regularEx = "#";
         String str = "";
@@ -415,17 +437,16 @@ public class InitialActivity extends AppCompatActivity {
             et.apply();
         }
     }
+
     public void setSharedPreference(String key, String value) {
         String regularEx = "#";
         SharedPreferences sp = getSharedPreferences("FTPHost", Context.MODE_PRIVATE);
         String values;
         values = sp.getString(key, "");
         SharedPreferences.Editor et = sp.edit();
-        et.putString(key, values+value+regularEx);
+        et.putString(key, values + value + regularEx);
         et.apply();
     }
-
-
 
 
     //Interactive message processing
@@ -434,7 +455,7 @@ public class InitialActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case Helper.SHOW_TOAST:
-                    Toast.makeText(InitialActivity.this, (String)msg.obj, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(InitialActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
                     break;
                 case Helper.NOTIFY_DATA_CHANGED:
                     ftpSimpleAdapter.notifyDataSetChanged();

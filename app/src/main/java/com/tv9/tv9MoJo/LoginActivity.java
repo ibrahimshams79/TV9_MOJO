@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 //    HashMap<String,String> hashMap = new HashMap<>();
     SharedPreferences sharedPreferences;
 
-    String HttpURL = "http://192.168.0.104/LoginRegister/login.php";
+    String HttpURL = "http://192.168.43.68/LoginRegister/login.php";
 //    HttpParse httpParse = new HttpParse();
 
     @Override
